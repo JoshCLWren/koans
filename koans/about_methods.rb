@@ -3,22 +3,22 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 def my_global_method(a,b)
   a + b
 end
-  
+
 class AboutMethods < EdgeCase::Koan
 
   def test_calling_global_methods
-    assert_equal __, my_global_method(2,3)
+    assert_equal 5, my_global_method(2,3)
   end
 
   def test_calling_global_methods_without_parentheses
     result = my_global_method 2, 3
-    assert_equal __, result
+    assert_equal 5, result
   end
 
   # (NOTE: We are Using eval below because the example code is
   # considered to be syntactically invalid).
   def test_sometimes_missing_parentheses_are_ambiguous
-    eval "assert_equal 5, my_global_method 2, 3" # ENABLE CHECK
+    eval "assert_equal 5, my_global_method( 2, 3)" # ENABLE CHECK
     #
     # Ruby doesn't know if you mean:
     #
@@ -29,19 +29,19 @@ class AboutMethods < EdgeCase::Koan
     # Rewrite the eval string to continue.
     #
   end
-  
+
   # NOTE: wrong number of argument is not a SYNTAX error, but a
   # runtime error.
   def test_calling_global_methods_with_wrong_number_of_arguments
-    exception = assert_raise(___) do
+    exception = assert_raise(ArgumentError) do
       my_global_method
     end
-    assert_match(/__/, exception.message)
+    assert_match(/\d/, exception.message)
 
-    exception = assert_raise(___) do
+    exception = assert_raise(ArgumentError) do
       my_global_method(1,2,3)
     end
-    assert_match(/__/, exception.message)
+    assert_match(/\d/, exception.message)
   end
 
   # ------------------------------------------------------------------
@@ -51,8 +51,8 @@ class AboutMethods < EdgeCase::Koan
   end
 
   def test_calling_with_default_values
-    assert_equal [1, __], method_with_defaults(1)
-    assert_equal [1, __], method_with_defaults(1, 2)
+    assert_equal [1, :default_value], method_with_defaults(1)
+    assert_equal [1, 2], method_with_defaults(1, 2)
   end
 
   # ------------------------------------------------------------------
@@ -135,7 +135,7 @@ class AboutMethods < EdgeCase::Koan
       "tail"
     end
   end
-  
+
   def test_calling_methods_in_other_objects_require_explicit_receiver
     rover = Dog.new
     assert_equal __, rover.name
